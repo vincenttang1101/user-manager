@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { EyeClosedIcon, EyeOpenIcon, ImageIcon } from "@radix-ui/react-icons";
-import { useForm } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -27,34 +27,29 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { UserFormData, userFormSchema } from "@/schemas/userForm.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { UserFormData } from "@/schemas/userForm.schema";
 import { InputField } from "@/components/common/InputField";
 
 type UserFormModal = {
+  isOpen: boolean;
   isUpdate: boolean;
-  children: ReactNode;
+  form: UseFormReturn<UserFormData>;
+  onOpenChange: () => void;
+  onSubmit: (data: UserFormData) => void;
 };
 
-export default function UserFormModal({ isUpdate, children }: UserFormModal) {
+export default function UserFormModal({
+  isOpen,
+  isUpdate,
+  form,
+  onOpenChange,
+  onSubmit,
+}: UserFormModal) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const form = useForm<UserFormData>({
-    resolver: zodResolver(userFormSchema),
-    defaultValues: {
-      email: "",
-      role: undefined,
-      phone: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -78,17 +73,11 @@ export default function UserFormModal({ isUpdate, children }: UserFormModal) {
 
   const toggleConfirmPasswordVisibility = (event: React.MouseEvent) => {
     event.preventDefault();
-
     setIsShowConfirmPassword(!isShowConfirmPassword);
   };
 
-  const onSubmit = (data: UserFormData) => {
-    console.log(data);
-  };
-
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[850px]">
         <DialogHeader>
           <DialogTitle>{isUpdate ? "Update user" : "Add new user"}</DialogTitle>
@@ -120,7 +109,7 @@ export default function UserFormModal({ isUpdate, children }: UserFormModal) {
                       >
                         <FormControl>
                           <SelectTrigger>
-                            <SelectValue placeholder="Select" />
+                            <SelectValue placeholder="Select Role" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -215,7 +204,9 @@ export default function UserFormModal({ isUpdate, children }: UserFormModal) {
               </div>
             </div>
             <DialogFooter className="sm:justify-start">
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" onClick={onOpenChange}>
+                Cancel
+              </Button>
               <Button type="submit">{isUpdate ? "Update" : "Add User"}</Button>
             </DialogFooter>
           </form>
