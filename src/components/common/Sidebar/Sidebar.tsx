@@ -1,20 +1,33 @@
 import { Link } from "react-router-dom";
 
 import { cn } from "@/libs/utils";
+import { useSidebar } from "@/contexts/SidebarContext";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import { useEffect } from "react";
 
 type SidebarProps = {
-  isOpen?: boolean;
   openWidth?: string;
   closedWidth?: string;
   className?: string;
 };
 
 export default function Sidebar({
-  isOpen = true,
   openWidth = "250px",
   closedWidth = "70px",
   className,
 }: SidebarProps) {
+  const { isOpen, toggleSidebar } = useSidebar();
+
+  const { width } = useWindowSize();
+
+  useEffect(() => {
+    if (width <= 768 && isOpen) {
+      toggleSidebar();
+    } else if (width > 768 && !isOpen) {
+      toggleSidebar();
+    }
+  }, [width, isOpen, toggleSidebar]);
+
   return (
     <aside
       className={cn(
@@ -29,7 +42,7 @@ export default function Sidebar({
         className={cn(
           "px-[39px] pb-[90px] pt-[20px] text-center text-[36px] font-medium",
           {
-            "px-0": !isOpen,
+            "px-4 pt-[10px] pb-[50px]": !isOpen,
           }
         )}
       >
@@ -37,20 +50,25 @@ export default function Sidebar({
           <img
             src="./icons/logo.png"
             alt="Logo"
-            className="w-24 aspect-square object-cover"
+            className={cn("w-24 aspect-square object-cover", {
+              "w-12": !isOpen,
+            })}
           />
         </Link>
       </div>
 
       <nav>
         <ul className="flex flex-col">
-          <li
-            className={cn(
-              "flex items-center gap-[24px] bg-[#04437B] p-[12px] text-[16px]"
-            )}
-          >
-            <img src="/icons/account.svg" alt="Account" className="w-5 h-5" />
-            {isOpen && <h2>User Manager</h2>}
+          <li>
+            <Link
+              to="/"
+              className={cn(
+                "flex items-center gap-[24px] bg-[#04437B] p-[12px] text-[16px]"
+              )}
+            >
+              <img src="/icons/account.svg" alt="Account" className="w-5 h-5" />
+              {isOpen && <h2>User Manager</h2>}
+            </Link>
           </li>
         </ul>
       </nav>

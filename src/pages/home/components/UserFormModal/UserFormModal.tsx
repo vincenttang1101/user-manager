@@ -5,30 +5,17 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ReactNode, useRef, useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useRef, useState } from "react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { EyeClosedIcon, EyeOpenIcon, ImageIcon } from "@radix-ui/react-icons";
 import { UseFormReturn } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormLabel } from "@/components/ui/form";
 import { UserFormData } from "@/schemas/userForm.schema";
 import { InputField } from "@/components/common/InputField";
+import { SelectField } from "@/components/common/SelectField";
 
 type UserFormModal = {
   isOpen: boolean;
@@ -37,6 +24,12 @@ type UserFormModal = {
   onOpenChange: () => void;
   onSubmit: (data: UserFormData) => void;
 };
+
+const RoleOptions = [
+  { value: "admin", label: "Admin", disabled: true },
+  { value: "editor", label: "Editor" },
+  { value: "user", label: "User" },
+];
 
 export default function UserFormModal({
   isOpen,
@@ -97,29 +90,13 @@ export default function UserFormModal({
                   type="email"
                   classNameWrapper="col-span-6"
                 />
-                <FormField
+                <SelectField
                   control={form.control}
                   name="role"
-                  render={({ field }) => (
-                    <FormItem className="col-span-6">
-                      <FormLabel>Role *</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Role" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Role *"
+                  options={RoleOptions}
+                  placeholder="Select Role"
+                  classNameWrapper="col-span-6"
                 />
                 <InputField
                   control={form.control}
@@ -207,7 +184,9 @@ export default function UserFormModal({
               <Button variant="outline" onClick={onOpenChange}>
                 Cancel
               </Button>
-              <Button type="submit">{isUpdate ? "Update" : "Add User"}</Button>
+              <Button type="submit">
+                {isUpdate ? "Update User" : "Add User"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

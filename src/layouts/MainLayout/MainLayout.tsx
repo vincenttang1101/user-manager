@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
-    <div className="flex items-start text-white">
+    <div className="flex text-white">
       <Sidebar />
       <div className="flex flex-col flex-grow">
         <Header />

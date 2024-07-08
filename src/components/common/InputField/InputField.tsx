@@ -13,7 +13,7 @@ interface InputFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
-  label: string;
+  label?: string;
   name: TName;
   control: Control<TFieldValues>;
   rightIcon?: ReactNode;
@@ -37,7 +37,7 @@ export default function InputField<
       name={name}
       render={({ field }) => (
         <FormItem className={classNameWrapper}>
-          <FormLabel>{label}</FormLabel>
+          {label && <FormLabel>{label}</FormLabel>}
           <FormControl>
             <div className="relative">
               <Input {...field} {...props} />
