@@ -5,7 +5,7 @@ class HttpService {
 
   constructor() {
     this.instance = axios.create({
-      baseURL: "https://668a4a4d2c68eaf3211c67d4.mockapi.io/api/v1",
+      baseURL: import.meta.env.VITE_MOCK_API,
       timeout: 10000,
       headers: {
         "Content-Type": "application/json",

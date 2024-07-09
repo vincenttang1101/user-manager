@@ -37,6 +37,7 @@ export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  // Form cho thêm/sửa user
   const userForm = useForm<UserFormData>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
@@ -50,19 +51,16 @@ export default function HomePage() {
     },
   });
 
+  // Form cho tìm kiếm và lọc
   const searchFilterForm = useForm<SearchFilterFormData>({
     resolver: zodResolver(searchFilterSchema),
     defaultValues: {
-      search: "",
+      search: params.search,
       roleFilter: params.roleFilter as "all" | "admin" | "editor" | "user",
     },
   });
 
-  const paginateData = (data: User[], pageIndex: number, pageSize: number) => {
-    const startIndex = (pageIndex - 1) * pageSize;
-    return data.slice(startIndex, startIndex + pageSize);
-  };
-
+  // Hàm lấy danh sách users từ API
   const getUsers = async () => {
     try {
       const usersRes = await usersApi.get();
@@ -73,6 +71,11 @@ export default function HomePage() {
   };
 
   const withUserRefresh = createWithRefresh(getUsers);
+
+  const paginateData = (data: User[], pageIndex: number, pageSize: number) => {
+    const startIndex = (pageIndex - 1) * pageSize;
+    return data.slice(startIndex, startIndex + pageSize);
+  };
 
   const handlePageSizeChange = (newPageSize: number) => {
     const newParams = new URLSearchParams(searchParams);
@@ -101,6 +104,28 @@ export default function HomePage() {
     await usersApi.delete(id);
   });
 
+  const applyFiltersAndSearch = (
+    data: User[],
+    filters: SearchFilterFormData
+  ) => {
+    return data.filter((user) => {
+      const searchMatch = filters.search
+        ? user.email.toLowerCase().includes(filters.search.toLowerCase()) ||
+          user.firstName.toLowerCase().includes(filters.search.toLowerCase()) ||
+          user.lastName.toLowerCase().includes(filters.search.toLowerCase()) ||
+          user.email.toLowerCase().includes(filters.search.toLowerCase()) ||
+          user.phone.includes(filters.search)
+        : true;
+
+      const roleMatch =
+        filters.roleFilter && filters.roleFilter !== "all"
+          ? user.role === filters.roleFilter
+          : true;
+
+      return searchMatch && roleMatch;
+    });
+  };
+
   const handleUserFormSubmit = withUserRefresh(async (data: UserFormData) => {
     isUpdate
       ? await handleUpdateUser(selectedUser!.id, data)
@@ -115,24 +140,7 @@ export default function HomePage() {
     newParams.set("pageSize", params.pageSize.toString());
     setSearchParams(newParams);
 
-    const filtered = users.filter((user) => {
-      const searchMatch = data.search
-        ? user.email.toLowerCase().includes(data.search.toLowerCase()) ||
-          user.firstName.toLowerCase().includes(data.search.toLowerCase()) ||
-          user.lastName.toLowerCase().includes(data.search.toLowerCase()) ||
-          user.email.toLowerCase().includes(data.search.toLowerCase()) ||
-          user.phone.includes(data.search)
-        : true;
-
-      const roleMatch =
-        data.roleFilter && data.roleFilter !== "all"
-          ? user.role === data.roleFilter
-          : true;
-
-      return searchMatch && roleMatch;
-    });
-
-    setFilteredUsers(filtered);
+    setFilteredUsers(applyFiltersAndSearch(users, data));
   };
 
   const toggleUserFormModal = (isUpdate: boolean = false, data?: User) => {
@@ -199,7 +207,8 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    handleSearchFilterSubmit(searchFilterForm.getValues());
+    const currentFilters = searchFilterForm.getValues();
+    setFilteredUsers(applyFiltersAndSearch(users, currentFilters));
   }, [users]);
 
   useEffect(() => {
