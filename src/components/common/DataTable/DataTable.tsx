@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { LuArrowUpDown } from "react-icons/lu";
 import { cn } from "@/libs/utils";
+import { Loading } from "@/components/common/Loading";
 
 export interface Column<T> {
   header: string;
@@ -20,6 +21,8 @@ export interface Column<T> {
 interface DataTableProps<T> {
   data: T[];
   columns: Column<T>[];
+  isLoading: boolean;
+  classNameWrapper?: string;
   className?: string;
 }
 
@@ -28,6 +31,8 @@ type SortDirection = "asc" | "desc" | null;
 export default function DataTable<T extends Record<string, any>>({
   data,
   columns,
+  isLoading,
+  classNameWrapper,
   className,
 }: DataTableProps<T>) {
   const [sortColumn, setSortColumn] = useState<keyof T | null>(null);
@@ -58,44 +63,66 @@ export default function DataTable<T extends Record<string, any>>({
   });
 
   return (
-    <Table className={cn(className, "overflow-scroll")}>
-      <TableHeader>
-        <TableRow>
-          {columns.map((column, index) => (
-            <TableHead
-              key={index}
-              className={`${column.width} ${
-                column.sortable ? "cursor-pointer" : ""
-              }`}
-              onClick={() => handleSort(column)}
-            >
-              <div className="flex items-center">
-                {column.header}
-                {column.sortable && (
-                  <span className="ml-2">
-                    {sortColumn === column.accessor && (
-                      <LuArrowUpDown className="h-4 w-4" />
-                    )}
-                  </span>
-                )}
-              </div>
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {sortedData.map((item, rowIndex) => (
-          <TableRow key={rowIndex}>
-            {columns.map((column, cellIndex) => (
-              <TableCell key={cellIndex}>
-                {typeof column.accessor === "function"
-                  ? column.accessor(item)
-                  : (item[column.accessor] as ReactNode)}
-              </TableCell>
+    <div
+      className={cn(
+        "relative flex max-h-[80vh] min-h-[150px] flex-col overflow-auto rounded-[12px] border border-[#343B4F]",
+        classNameWrapper
+      )}
+    >
+      <Table className={cn(className, "overflow-scroll")}>
+        <TableHeader>
+          <TableRow>
+            {columns.map((column, index) => (
+              <TableHead
+                key={index}
+                className={`${column.width} ${
+                  column.sortable ? "cursor-pointer" : ""
+                }`}
+                onClick={() => handleSort(column)}
+              >
+                <div className="flex items-center">
+                  {column.header}
+                  {column.sortable && (
+                    <span className="ml-2">
+                      {sortColumn === column.accessor && (
+                        <LuArrowUpDown className="h-4 w-4" />
+                      )}
+                    </span>
+                  )}
+                </div>
+              </TableHead>
             ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {sortedData.map((item, rowIndex) => (
+            <TableRow key={rowIndex}>
+              {columns.map((column, cellIndex) => (
+                <TableCell key={cellIndex} className="py-5">
+                  {typeof column.accessor === "function"
+                    ? column.accessor(item)
+                    : (item[column.accessor] as ReactNode)}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+
+          {!isLoading && data.length === 0 && (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={columns.length}>
+                <div className="flex items-center justify-center h-[150px] text-2xl font-semibold">
+                  No data available
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <Loading className="h-24 w-24" />
+        </div>
+      )}
+    </div>
   );
 }

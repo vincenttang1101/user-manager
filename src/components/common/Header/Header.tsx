@@ -5,7 +5,7 @@ export default function Header() {
   const { isOpen, toggleSidebar } = useSidebar();
 
   return (
-    <div className="bg-primary-twilight">
+    <div className="bg-primary-twilight px-5">
       <div className="py-2 flex items-center gap-4">
         {isOpen ? (
           <RiMenuFoldFill

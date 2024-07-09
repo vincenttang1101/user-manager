@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-class HttpService {
+export class HttpService {
   instance: AxiosInstance;
 
   constructor() {

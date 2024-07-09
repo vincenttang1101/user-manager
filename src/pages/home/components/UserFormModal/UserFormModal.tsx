@@ -6,16 +6,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { EyeClosedIcon, EyeOpenIcon, ImageIcon } from "@radix-ui/react-icons";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { UseFormReturn } from "react-hook-form";
-import { Form, FormLabel } from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { UserFormData } from "@/schemas/userForm.schema";
 import { InputField } from "@/components/common/InputField";
 import { SelectField } from "@/components/common/SelectField";
+import { AvatarField } from "@/components/common/AvatarField";
 
 type UserFormModal = {
   isOpen: boolean;
@@ -59,15 +58,25 @@ export default function UserFormModal({
     fileInputRef.current?.click();
   };
 
-  const togglePasswordVisibility = (event: React.MouseEvent) => {
-    event.preventDefault();
+  const togglePasswordVisibility = () => {
     setIsShowPassword(!isShowPassword);
   };
 
-  const toggleConfirmPasswordVisibility = (event: React.MouseEvent) => {
-    event.preventDefault();
+  const toggleConfirmPasswordVisibility = () => {
     setIsShowConfirmPassword(!isShowConfirmPassword);
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setIsShowPassword(false);
+      setIsShowConfirmPassword(false);
+      setSelectedImage(null);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isUpdate) setSelectedImage(form.getValues("avatar") as string);
+  }, [isUpdate]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -97,6 +106,7 @@ export default function UserFormModal({
                   options={RoleOptions}
                   placeholder="Select Role"
                   classNameWrapper="col-span-6"
+                  disabled={form.getValues("role") === "admin"}
                 />
                 <InputField
                   control={form.control}
@@ -124,6 +134,7 @@ export default function UserFormModal({
                   type={isShowPassword ? "text" : "password"}
                   rightIcon={
                     <Button
+                      type="button"
                       variant="outline"
                       size="icon"
                       className="absolute right-0 top-0 h-full"
@@ -141,6 +152,7 @@ export default function UserFormModal({
                   type={isShowConfirmPassword ? "text" : "password"}
                   rightIcon={
                     <Button
+                      type="button"
                       variant="outline"
                       size="icon"
                       onClick={toggleConfirmPasswordVisibility}
@@ -156,28 +168,14 @@ export default function UserFormModal({
                 />
               </div>
               <div className="col-span-4 flex items-center flex-col gap-3">
-                <FormLabel>Profile picture</FormLabel>
-                <Avatar
-                  className="w-44 h-44 mb-4 cursor-pointer"
-                  onClick={handleAvatarClick}
-                >
-                  {selectedImage ? (
-                    <AvatarImage src={selectedImage} alt="Selected profile" />
-                  ) : (
-                    <AvatarFallback>
-                      <ImageIcon className="w-20 h-20 text-gray-400" />
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                <Input
-                  id="avatar"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
+                <AvatarField
                   ref={fileInputRef}
+                  control={form.control}
+                  name="avatar"
+                  selectedImage={selectedImage}
+                  onAvatarClick={handleAvatarClick}
+                  onImageChange={handleImageChange}
                 />
-                <Button onClick={handleAvatarClick}>Select Image</Button>
               </div>
             </div>
             <DialogFooter className="sm:justify-start">

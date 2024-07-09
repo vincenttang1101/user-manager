@@ -6,6 +6,6 @@ export type User = {
   phone: string;
   avatar: string;
   password: string;
-  role: string;
+  role: "admin" | "editor" | "user";
   createdAt: string;
 };

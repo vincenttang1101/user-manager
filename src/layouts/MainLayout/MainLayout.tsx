@@ -1,6 +1,6 @@
 import { Header } from "@/components/common/Header";
+import { MainContent } from "@/components/common/MainContent";
 import { Sidebar } from "@/components/common/Sidebar";
-import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
   return (
@@ -8,9 +8,7 @@ export default function MainLayout() {
       <Sidebar />
       <div className="flex flex-col flex-grow">
         <Header />
-        <div className="bg-primary-midnight min-h-screen">
-          <Outlet />
-        </div>
+        <MainContent />
       </div>
     </div>
   );

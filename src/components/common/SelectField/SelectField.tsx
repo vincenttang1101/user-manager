@@ -42,6 +42,7 @@ export default function SelectField<
   options,
   placeholder = "Select an option",
   classNameWrapper,
+  ...rest
 }: SelectFieldProps<TFieldValues, TName>) {
   return (
     <FormField
@@ -50,7 +51,11 @@ export default function SelectField<
       render={({ field }) => (
         <FormItem className={classNameWrapper}>
           {label && <FormLabel>{label}</FormLabel>}
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={field.onChange}
+            defaultValue={field.value}
+            {...rest}
+          >
             <FormControl>
               <SelectTrigger>
                 <SelectValue placeholder={placeholder} />

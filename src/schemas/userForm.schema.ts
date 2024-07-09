@@ -1,3 +1,4 @@
+import { avatarSchema } from "@/schemas/avatar.schema";
 import { z } from "zod";
 
 export const userFormSchema = z
@@ -22,12 +23,9 @@ export const userFormSchema = z
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
-      .max(100, "Password must not exceed 100 characters")
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character"
-      ),
-    confirmPassword: z.string(),
+      .max(100, "Password must not exceed 100 characters"),
+    confirmPassword: z.string().min(1, "Confirm Password is required"),
+    avatar: avatarSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
