@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SelectProps } from "@radix-ui/react-select";
 
 type SelectOption = {
   value: string;
@@ -23,7 +24,7 @@ type SelectOption = {
 interface SelectFieldProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
-> {
+> extends Omit<SelectProps, "onValueChange" | "defaultValue"> {
   label?: string;
   name: TName;
   control: Control<TFieldValues>;
