@@ -4,8 +4,8 @@ import { Sidebar } from "@/components/common/Sidebar";
 
 export default function MainLayout() {
   return (
-    <div className="flex text-white">
-      <Sidebar />
+    <div className="flex text-white min-h-screen h-full">
+      <Sidebar className="flex-grow" />
       <div className="flex flex-col flex-grow">
         <Header />
         <MainContent />

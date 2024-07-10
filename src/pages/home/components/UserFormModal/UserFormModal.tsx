@@ -80,7 +80,7 @@ export default function UserFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[850px]">
+      <DialogContent className="w-full md:max-w-[500px] lg:max-w-[850px]">
         <DialogHeader>
           <DialogTitle>{isUpdate ? "Update user" : "Add new user"}</DialogTitle>
         </DialogHeader>
@@ -90,8 +90,8 @@ export default function UserFormModal({
             className="flex flex-col gap-6"
             noValidate
           >
-            <div className="grid grid-cols-12 gap-3">
-              <div className="col-span-8 grid grid-cols-12 gap-4 border-r border-r-gray-300 pr-8">
+            <div className="grid lg:grid-cols-12 gap-3">
+              <div className="col-span-8 lg:grid grid-cols-12 gap-4 border-r border-r-gray-300 pr-8">
                 <InputField
                   control={form.control}
                   label="Email *"
@@ -167,7 +167,7 @@ export default function UserFormModal({
                   classNameWrapper="col-span-12"
                 />
               </div>
-              <div className="col-span-4 flex items-center flex-col gap-3">
+              <div className="lg:col-span-4 flex items-center flex-col gap-3">
                 <AvatarField
                   ref={fileInputRef}
                   control={form.control}

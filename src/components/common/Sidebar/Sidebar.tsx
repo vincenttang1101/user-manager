@@ -53,7 +53,7 @@ export default function Sidebar({
         </Link>
       </div>
 
-      <nav className="w-full">
+      <nav className="w-full min-h-screen">
         <ul className="flex flex-col">
           <li>
             <Link
