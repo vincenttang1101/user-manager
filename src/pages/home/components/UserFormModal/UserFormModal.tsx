@@ -80,7 +80,7 @@ export default function UserFormModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="w-full md:max-w-[500px] lg:max-w-[850px]">
+      <DialogContent className="w-full md:max-w-[500px] lg:max-w-[850px] overflow-y-scroll lg:overflow-auto max-h-screen">
         <DialogHeader>
           <DialogTitle>{isUpdate ? "Update user" : "Add new user"}</DialogTitle>
         </DialogHeader>
@@ -90,14 +90,14 @@ export default function UserFormModal({
             className="flex flex-col gap-6"
             noValidate
           >
-            <div className="grid lg:grid-cols-12 gap-3">
-              <div className="col-span-8 lg:grid grid-cols-12 gap-4 border-r border-r-gray-300 pr-8">
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-3">
+              <div className="lg:col-span-8 lg:grid grid-cols-12 gap-4 lg:border-r lg:border-r-gray-300 lg:pr-8">
                 <InputField
                   control={form.control}
                   label="Email *"
                   name="email"
                   type="email"
-                  classNameWrapper="col-span-6"
+                  classNameWrapper="lg:col-span-6"
                 />
                 <SelectField
                   control={form.control}

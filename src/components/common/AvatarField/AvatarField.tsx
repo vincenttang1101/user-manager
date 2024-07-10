@@ -27,10 +27,10 @@ const AvatarField = forwardRef<HTMLInputElement, AvatarFieldProps>(
         control={control}
         name={name}
         render={({ field }) => (
-          <FormItem>
+          <FormItem className="flex items-center flex-col">
             <FormLabel>Profile picture</FormLabel>
             <FormControl>
-              <div className="flex flex-col items-center space-y-4">
+              <div className="flex flex-col justify-center items-center space-y-4">
                 <Avatar
                   className="w-44 h-44 cursor-pointer"
                   onClick={onAvatarClick}
