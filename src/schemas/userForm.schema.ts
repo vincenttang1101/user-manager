@@ -9,9 +9,12 @@ export const userFormSchema = z
     }),
     phone: z
       .string()
-      .min(10, "Phone number must be at least 10 digits")
-      .max(15, "Phone number must not exceed 15 digits")
-      .regex(/^\d+$/, "Phone number must contain only digits"),
+      .regex(
+        /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/,
+        "Invalid Vietnamese phone number"
+      )
+      .min(9, "Phone number must be at least 9 digits")
+      .max(10, "Phone number must not exceed 10 digits"),
     firstName: z
       .string()
       .min(2, "First name must be at least 2 characters")
